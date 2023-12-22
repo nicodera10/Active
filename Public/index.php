@@ -1,13 +1,32 @@
 <?php
 
-define('ROOT',dirname(__DIR__));
+require_once '../src/Autoloader.php';
+App\Autoloader::register();
 
-use App\Autoloader;
-use App\Core\Main;
+function root($page): void
+{
 
-require_once '../classes/Autoloader.php';
-Autoloader::register();
+    $request = explode("/", $page);
 
-$app = new Main();
+    $pageContentInc = "../src/Controller/" . ucfirst($request[0]) . "Controller.php";
 
-$app->start();
+    if ( ! file_exists($pageContentInc)) {
+        $pageContentInc = "../src/Controller/ErrorController.php";
+    }
+
+    require_once(realpath($pageContentInc));
+
+    if (isset($request[1]) && function_exists($request[1])){
+        $request[1]();
+    } else {
+        $class = new $pageContentInc;
+        $class->index();
+    }
+}
+
+if (isset($_GET['page'])) {
+    root($_GET['page']);
+
+} else {
+    root("Main");
+}
