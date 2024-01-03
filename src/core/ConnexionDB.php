@@ -15,6 +15,12 @@ class ConnexionDB {
     private static string $dbUser;
     private static string $dbPassword;
 
+    //interdiction d'appeler le constructeur
+    private function __construct()
+    {
+        trigger_error('L\'instanciation n\'est pas autorisée.', E_USER_ERROR);
+    }
+
     // Chargement de la configuration dans une méthode statique distincte
     private static function loadConfig() {
         self::$config = parse_ini_file(self::$fichierConf, true);
@@ -23,11 +29,6 @@ class ConnexionDB {
         self::$dbName = self::$config['DB_NAME'];
         self::$dbUser = self::$config['DB_USER'];
         self::$dbPassword = self::$config['DB_PASSWORD'];
-    }
-
-    private function __construct()
-    {
-        trigger_error('L\'instanciation n\'est pas autorisée.', E_USER_ERROR);
     }
 
     public static function getConnexion(){

@@ -5,7 +5,7 @@ namespace App\DAO;
 use App\Core\ConnexionDB;
 use PDO;
 
-class DAO extends ConnexionDB
+class DAO
 {
 
     // Table de la base de données

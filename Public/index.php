@@ -5,28 +5,28 @@ App\Autoloader::register();
 
 function root($page): void
 {
-
     $request = explode("/", $page);
 
-    $pageContentInc = "../src/Controller/" . ucfirst($request[0]) . "Controller.php";
+    $controllerName = ucfirst($request[0]) . "Controller";
+    $controllerClass = "App\\Controllers\\" . $controllerName;
 
-    if ( ! file_exists($pageContentInc)) {
-        $pageContentInc = "../src/Controller/ErrorController.php";
+    if ( ! class_exists($controllerClass)) {
+        $controllerClass = "App\\Controllers\\ErrorController";
     }
 
-    require_once(realpath($pageContentInc));
-
-    if (isset($request[1]) && function_exists($request[1])){
-        $request[1]();
+    if (isset($request[1]) && method_exists($controllerClass, $request[1])) {
+        $method = $request[1];
+        $controller = new $controllerClass;
+        $controller->$method();
     } else {
-        $class = new $pageContentInc;
-        $class->index();
+        $controller = new $controllerClass;
+        $controller->index();
     }
 }
 
+
 if (isset($_GET['page'])) {
     root($_GET['page']);
-
 } else {
     root("Main");
 }
